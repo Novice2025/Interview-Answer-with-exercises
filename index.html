@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Answer : Lego Method by Daby</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body { 
+            font-family: 'Inter', sans-serif; 
+            transition: background-color 0.3s, color 0.3s;
+            background-color: #1a0000; /* Deepest Blood Red */
+            color: #f9fafb; 
+        }
+        
+        /* Dark Theme Color Adjustments */
+        .bg-white { background-color: #330000; } 
+        .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.7), 0 4px 6px -2px rgba(0, 0, 0, 0.2); }
+        .block-card { transition: transform 0.1s, box-shadow 0.1s; cursor: pointer; border-color: #550000; background-color: #330000; } 
+        .block-card:hover { transform: translateY(-2px); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.8); }
+        .method-btn { transition: background-color 0.2s, transform 0.1s; }
+        .method-btn:hover { transform: translateY(-1px); }
+
+        /* Color Palette for Dark Blood */
+        .color-gold { color: #facc15; } /* Gold accent for headers */
+        .color-light-gold { color: #fde047; }
+        .color-impact-red { color: #f87171; } /* Lighter red for emphasis */
+        .color-safe-green { color: #4ade80; } /* Green for success/output */
+        .bg-safe-green { background-color: #4ade80; }
+        .hover\:bg-safe-green:hover { background-color: #22c55e; }
+
+        /* Theming for Blocks and Inputs */
+        .input-style { border-color: #6b7280; background-color: #4b5563; color: #f9fafb; }
+        .block-select { background-color: #4b5563; color: #f9fafb; border-color: #6b7280; }
+        
+        /* Method Card Styles */
+        .bg-indigo-50 { background-color: #4a0000; border-color: #facc15; }
+        .text-indigo-800 { color: #facc15; }
+        .bg-red-50 { background-color: #4a0000; border-color: #f87171; }
+        .text-red-800 { color: #f87171; }
+
+        .method-btn-gold { background-color: #facc15; color: #1a0000; }
+        .method-btn-gold:hover { background-color: #fcd34d; }
+        .method-btn-red { background-color: #ef4444; color: white; }
+        .method-btn-red:hover { background-color: #dc2626; }
+
+        /* Collapsible Explanation Style */
+        details summary { cursor: pointer; }
+        details summary:hover { color: #fde047; }
+        .explanation-content {
+            padding: 0.5rem;
+            border-left: 3px solid #facc15;
+            background-color: #4a0000;
+            border-radius: 0 0 0.5rem 0.5rem;
+        }
+        .explanation-content ul { list-style-type: disc; margin-left: 1.5rem; }
+
+        /* Matching Game Styles */
+        .match-card {
+            background-color: #4a0000;
+            border: 2px solid #f87171; /* Impact Red border */
+            color: #f9fafb;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            user-select: none;
+            text-align: center;
+        }
+        .match-card:hover:not(.selected):not(.matched) {
+            background-color: #6a0000;
+        }
+        .match-card.selected {
+            background-color: #facc15; /* Gold for selected */
+            color: #1a0000;
+            border-color: #facc15;
+            transform: scale(1.02);
+            font-weight: bold;
+        }
+        .match-card.matched {
+            background-color: #166534; /* Dark Green for matched */
+            color: #f9fafb;
+            border-color: #4ade80;
+            cursor: default;
+        }
+        .match-card.incorrect {
+            background-color: #991b1b; /* Darker Red for incorrect flash */
+            border-color: #f87171;
+            animation: incorrect-flash 0.5s;
+        }
+
+        @keyframes incorrect-flash {
+            0%, 100% { border-color: #f87171; }
+            50% { border-color: #ff0000; }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <!-- Header & Dark Mode Toggle -->
+        <header class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-extrabold color-gold">
+                Interview Answer : Lego Method by Daby
+            </h1>
+            <button id="darkModeToggle" class="p-2 rounded-full bg-gray-700 text-gray-200 shadow-md">
+                <svg id="sunIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                <svg id="moonIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+            </button>
+        </header>
+
+        <!-- Section 1: Configuration Inputs -->
+        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg border border-gray-700">
+            <h2 class="text-2xl font-bold mb-4 color-gold">1. Define Your Role & Impact</h2>
+            <div class="grid md:grid-cols-3 gap-4">
+                <input type="text" id="jobTitle" value="Financial Analyst" placeholder="Your Job Title" class="p-3 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 input-style">
+                <input type="text" id="industry" value="IT" placeholder="Your Industry/Sector" class="p-3 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 input-style">
+                <input type="text" id="topSkill" value="streamlining operations" placeholder="Your Key Impact/Skill (Gerund)" class="p-3 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 input-style">
+            </div>
+        </section>
+
+        <!-- Section 2: Lego Blocks (Phrase Options) -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4 color-gold">2. Select Your Answer Components (Lego Blocks)</h2>
+            <div id="legoBlocks" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <!-- Blocks will be populated by JS -->
+            </div>
+        </section>
+
+        <!-- Section 3: Method Selection -->
+        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg border border-gray-700">
+            <h2 class="text-2xl font-bold mb-4 color-gold">3. Choose Your Assembly Method</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Lego Method -->
+                <div class="p-5 bg-indigo-50 border-4 rounded-xl">
+                    <h3 class="text-xl font-semibold mb-2 text-indigo-800">The Lego Method (Standard)</h3>
+                    <p class="text-sm text-gray-300 mb-3">A standard, professional, chronological approach: **Experience → Responsibilities → Strengths → Fit.**</p>
+                    <div class="flow-diagram flex justify-between items-center text-xs font-mono mb-4 p-2 bg-gray-900 rounded-md">
+                        <span class="text-yellow-400">P1/P2</span><span class="text-gray-400"> > </span>
+                        <span class="text-red-400">P4</span><span class="text-gray-400"> > </span>
+                        <span class="text-green-400">P7/P9</span><span class="text-gray-400"> > </span>
+                        <span class="text-blue-400">P12/P6</span>
+                    </div>
+                    <button id="legoMethodBtn" class="method-btn-gold w-full py-3 font-bold rounded-lg shadow-md">
+                        Generate with Lego Method
+                    </button>
+                </div>
+                <!-- Disruptive Method -->
+                <div class="p-5 bg-red-50 border-4 rounded-xl">
+                    <h3 class="text-xl font-semibold mb-2 color-impact-red">The Disruptive Method (Impact-First)</h3>
+                    <p class="text-sm text-gray-300 mb-3">Lead with your biggest win or skill to immediately grab attention: **Strength → Proof → Experience → Fit.**</p>
+                    <div class="flow-diagram flex justify-between items-center text-xs font-mono mb-4 p-2 bg-gray-900 rounded-md">
+                        <span class="text-green-400">P3</span><span class="text-gray-400"> > </span>
+                        <span class="text-red-400">P4</span><span class="text-gray-400"> > </span>
+                        <span class="text-yellow-400">P1</span><span class="text-gray-400"> > </span>
+                        <span class="text-blue-400">P10/P13/P6</span>
+                    </div>
+                    <button id="disruptiveMethodBtn" class="method-btn-red w-full py-3 font-bold rounded-lg shadow-md">
+                        Generate with Disruptive Method
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Terminology Matching Game -->
+        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg border border-gray-700">
+            <h2 class="text-2xl font-bold mb-4 color-gold">4. Terminology Matching Game (15 Pairs)</h2>
+            <p class="text-gray-300 mb-4">Test your knowledge of the professional language! Match the concept on the left with the correct definition/example on the right.</p>
+            <div id="matchingGame" class="grid md:grid-cols-2 gap-4">
+                <div id="termsColumn" class="flex flex-col gap-3">
+                    <h3 class="text-xl font-bold text-yellow-300 border-b pb-1 border-yellow-300">Concept</h3>
+                    <!-- Terms populated here -->
+                </div>
+                <div id="definitionsColumn" class="flex flex-col gap-3">
+                    <h3 class="text-xl font-bold text-yellow-300 border-b pb-1 border-yellow-300">Definition/Example</h3>
+                    <!-- Definitions populated here -->
+                </div>
+            </div>
+            <div class="mt-6 text-center">
+                <p id="gameMessage" class="text-lg font-semibold text-yellow-300"></p>
+                <button id="resetGameBtn" class="mt-3 py-2 px-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow transition-colors duration-200 hidden">
+                    Restart Game
+                </button>
+            </div>
+        </section>
+
+        <!-- Section 5: Output Result (Renumbered) -->
+        <section class="p-6 bg-white rounded-xl shadow-2xl border-t-4 border-safe-green">
+            <h2 class="text-2xl font-bold mb-4 color-safe-green">5. Your Generated Interview Answer</h2>
+            <div id="outputContainer" class="p-4 min-h-[150px] bg-gray-900 rounded-lg border-l-4 border-safe-green text-lg text-gray-200 whitespace-pre-wrap font-medium">
+                <p>Select an assembly method above to generate your professional, high-impact answer.</p>
+            </div>
+            <button id="copyBtn" class="mt-4 py-2 px-4 bg-safe-green hover:bg-green-600 text-gray-900 font-semibold rounded-lg shadow transition-colors duration-200" style="display: none;">
+                Copy Answer
+            </button>
+        </section>
+
+    </div>
+
+    <script>
+        const $ = (id) => document.getElementById(id);
+        const darkModeToggle = $('darkModeToggle');
+        const sunIcon = $('sunIcon');
+        const moonIcon = $('moonIcon');
+        const outputContainer = $('outputContainer');
+        const legoMethodBtn = $('legoMethodBtn');
+        const disruptiveMethodBtn = $('disruptiveMethodBtn');
+        const copyBtn = $('copyBtn');
+        const termsColumn = $('termsColumn');
+        const definitionsColumn = $('definitionsColumn');
+        const gameMessage = $('gameMessage');
+        const resetGameBtn = $('resetGameBtn');
+
+        // --- Icon Definitions (Lucide Icons) ---
+        const icons = {
+            'P1': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 color-gold"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+            'P2': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 color-gold"><path d="M16 20V4a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1z"/><path d="M12 21v-1"/></svg>`,
+            'P3': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 color-impact-red"><path d="M11 19c-1.333-1.333-2.667-2.667-4-4V5h12v10c-1.333 1.333-2.667 2.667-4 4z"/><line x1="12" y1="5" x2="12" y2="19"/></svg>`,
+            'P4': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 color-impact-red"><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M19 8h-3V5"/></svg>`,
+            'P5': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 color-safe-green"><path d="M22 10V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10M12 19l10-10"/><path d="M16 16v.01"/></svg>`,
+            'P6': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 color-safe-green"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>`,
+            'P7': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 color-gold"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.49 0-2.87 1.25-3.82 2.5a6 6 0 0 0-1.74-2.5C7.4 3.32 6 2 4.5 2A5.5 5.5 0 0 0 2 7.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>`,
+            'P8': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 color-gold"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+            'P9': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 color-impact-red"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><path d="M12 2v2m0 16v2m-6-8h-2m18 0h-2m-8-6v-2m0 18v-2"/></svg>`,
+            'P10': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 color-impact-red"><path d="M21 15V8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v7"/><path d="M22 17H2"/><path d="M15 11v6m4-6v6m-8-6v6m-4-6v6"/></svg>`,
+            'P11': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 color-safe-green"><path d="M20 10c0 6-8 11-8 11s-8-5-8-11a8 8 0 0 1 16 0z"/><path d="M12 8c2.21 0 4 1.79 4 4"/></svg>`,
+            'P12': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 color-safe-green"><path d="M13.5 8.5l4 4-4 4"/><path d="M17.5 12h-11"/></svg>`,
+            'P13': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 color-gold"><path d="M15 22l-7-7 7-7"/></svg>`
+        };
+
+        // --- Data Structure (Lego Blocks - unchanged) ---
+
+        const blocks = {
+            'P1': { 
+                title: 'P1: Years of Experience',
+                desc: 'Sets the total experience duration.',
+                options: [
+                    'I have **more than 15 years of experience**',
+                    'I have **over 10 years of experience**',
+                    'I have **almost 20 years of experience** (for 18-19 years)',
+                    'I have **almost 15 years of experience** (for 13-14 years)'
+                ],
+                current: 'I have **more than 15 years of experience**',
+                explanation: 'When discussing years of experience, use **"more than / over"** if the number is greater than the round number (e.g., 16 years is "more than 15"). Use **"almost"** if it\'s slightly less (e.g., 14 years is "almost 15"). Avoid "I have X years" for a more sophisticated opening.'
+            },
+            'P2': { 
+                title: 'P2: Role & Field Context',
+                desc: 'Specifies the job title and industry using formal terms.',
+                options: [
+                    'as **a [jobTitle]** in the **[industry] industry**.',
+                    'as **an [jobTitle]** in the **[industry] sector**.', 
+                    'in the **[industry] field**, specializing as **a [jobTitle]**.'
+                ],
+                current: 'as **a [jobTitle]** in the **[industry] industry**.',
+                explanation: 'Always include the article **"a" or "an"** before your job title (e.g., "as a Project Manager," "as an Accountant"). Use formal terms like **"industry," "sector," or "field"** instead of the informal "area."'
+            },
+            'P3': { 
+                title: 'P3: Core Strength (High-Impact)',
+                desc: 'Uses formal, convincing adjectives (Extensive/Significant).',
+                options: [
+                    'I have **extensive experience** in [topSkill].',
+                    'I have **significant experience** in [topSkill] for major clients.',
+                    'I have **superior communication skills** and a **strong work ethic**, crucial for [topSkill].'
+                ],
+                current: 'I have **extensive experience** in [topSkill].',
+                explanation: 'Instead of "a lot of experience," use formal adjectives like **"extensive" or "significant."** These words are more impressive and convey a higher level of professionalism. You can follow this with a gerund (e.g., "creating campaigns") or a noun (e.g., "project management experience").'
+            },
+            'P4': { 
+                title: 'P4: Responsibilities (Action Verbs)',
+                desc: 'Provides evidence of the role\'s scope using strong action verbs (gerunds).',
+                options: [
+                    'In this role, I am responsible for **overseeing** a team of 15 and **streamlining** operations.',
+                    'I successfully **led** cross-functional teams, **analyzed** market trends, and **developed** strategic initiatives.',
+                    'My key focus was **improving** efficiency, **creating** new processes, and **coordinating** multi-department projects.'
+                ],
+                current: 'In this role, I am responsible for **overseeing** a team of 15 and **streamlining** operations.',
+                explanation: `
+                    <p class='mb-2'>After "responsible for," always use a **gerund** (-ING verb). Choose "was responsible for" if you are talking about a completed past role, or **"am responsible for"** if it's your current role.</p>
+                    <p class='mb-2'>Use these high-impact verbs:</p>
+                    <ul class='list-disc list-inside ml-4'>
+                        <li><strong>Managing, Overseeing, Leading, Coordinating, Creating, Developing, Reviewing, Improving, Streamlining, Analyzing.</strong></li>
+                        <li>The word **"streamlining"** is particularly powerful, implying executive-level efficiency improvements.</li>
+                    </ul>
+                `
+            },
+            'P5': { 
+                title: 'P5: Education & Credentials',
+                desc: 'Formal phrasing for your degrees and certifications.',
+                options: [
+                    'I **have a Bachelor of Science** from a prestigious university.',
+                    'I **received my Master of Education** from a top institution in 2020.',
+                    'I **completed my PMP certification** in 2019.'
+                ],
+                current: 'I **have a Bachelor of Science** from a prestigious university.',
+                explanation: 'For degrees, use "I have a Bachelor of...", "I received my Master of...", or "I obtained my PhD...". For certifications, use **"I completed my [Certification Name]"** or "I received my [Certification Name]". Avoid explaining well-known industry acronyms unless explicitly asked.'
+            },
+            'P6': { 
+                title: 'P6: Strong Conclusion',
+                desc: 'A powerful closing statement that highlights your value and future contribution.',
+                options: [
+                    'I am **confident** that my **extensive** [jobTitle] skills would make me a **valuable asset** to your team.',
+                    'I am **confident** that my **extensive** [jobTitle] skills would make me a **valuable asset** to your team, and I look forward to the opportunity to **contribute to your goals**.',
+                    'I believe my **proven track record** in [topSkill] aligns perfectly with your company\'s vision.'
+                ],
+                current: 'I am **confident** that my **extensive** [jobTitle] skills would make me a **valuable asset** to your team, and I look forward to the opportunity to **contribute to your goals**.',
+                explanation: 'Always end strong! Avoid simply saying "Thank you." Use phrases like **"I\'m confident that...", "valuable asset," and "contribute to your goals"** to leave a lasting positive impression.'
+            },
+            'P7': { 
+                title: 'P7: Personal Strengths (Adjectives)',
+                desc: 'List your best qualities using strong adjectives.',
+                options: [
+                    'As for my strengths, I\'m **extremely hardworking, committed, and proactive**.',
+                    'I consider myself **highly trustworthy, focused, and methodical**.',
+                    'My key qualities include being **extremely reliable, analytical, and adaptable**.'
+                ],
+                current: 'As for my strengths, I\'m **extremely hardworking, committed, and proactive**.',
+                explanation: 'Use a transition word like "As for my strengths..." and intensify your adjectives with **"extremely" or "highly"** instead of "very" or "really".'
+            },
+            'P8': { 
+                title: 'P8: Team Player (Noun)',
+                desc: 'Correctly phrase being a team player.',
+                options: [
+                    'I am also **a team player** who collaborates effectively.',
+                    'I pride myself on being **a collaborative team player**.',
+                    'As **a strong team player**, I excel in group environments.'
+                ],
+                current: 'I am also **a team player** who collaborates effectively.',
+                explanation: 'Remember **"team player" is a noun phrase, not an adjective**. So, it\'s "I am a team player," not "I am extremely team player."'
+            },
+            'P9': { 
+                title: 'P9: Specific Skills (Formal Adjectives)',
+                desc: 'Describe your skill level with formal adjectives.',
+                options: [
+                    'I have **advanced [topSkill] skills**.',
+                    'I possess **superior communication skills**.',
+                    'I have **excellent problem-solving abilities**.'
+                ],
+                current: 'I have **advanced [topSkill] skills**.',
+                explanation: 'When describing your skill level, move beyond "good." Use **"advanced," "superior," or "excellent"** to convey a higher proficiency. These are key skills employers want.'
+            },
+            'P10': { 
+                title: 'P10: Top Skills (Noun Phrases)',
+                desc: 'Highlight employer-desired skills as noun phrases.',
+                options: [
+                    'My key technical skills include **problem-solving, teamwork, and leadership**.',
+                    'I bring **advanced creativity, strong interpersonal skills, and meticulous attention to detail**.',
+                    'I have a **demonstrated ability** in **adaptability and effective time management**.'
+                ],
+                current: 'My key technical skills include **problem-solving, teamwork, and leadership**.',
+                explanation: 'Use these specific skills: Problem-solving, Teamwork, Creativity, Leadership, Interpersonal skills, Attention to detail, Adaptability, Time management, and Communication.'
+            },
+            'P11': { 
+                title: 'P11: Work Ethic (Collocation)',
+                desc: 'Use the correct adjective for "work ethic."',
+                options: [
+                    'Furthermore, I possess a **strong work ethic**.',
+                    'My colleagues commend my **strong work ethic** and dedication.',
+                    'I approach all tasks with a **strong work ethic** and commitment.'
+                ],
+                current: 'Furthermore, I possess a **strong work ethic**.',
+                explanation: 'For "work ethic," the correct and most natural adjective in English is **"strong."** This is a common collocation (words that typically go together).'
+            },
+            'P12': { 
+                title: 'P12: Why This Job? (Develop Skills)',
+                desc: 'Express interest in developing existing skills.',
+                options: [
+                    'I am looking for an opportunity to **further develop my [topSkill] skills**.',
+                    'I seek a challenging environment to **hone my leadership skills**.',
+                    'This position offers an ideal platform to **expand my strategic planning expertise**.'
+                ],
+                current: 'I am looking for an opportunity to **further develop my [topSkill] skills**.',
+                explanation: 'Instead of "I want to learn more skills," use **"I\'m looking for an opportunity to further / develop / hone my X skills."** This sounds proactive and shows a growth mindset.'
+            },
+            'P13': { 
+                title: 'P13: Why This Job? (Gain Experience)',
+                desc: 'Express interest in gaining experience in a new area.',
+                options: [
+                    'I am looking for an opportunity to **gain experience** in the **[industry] sector**.',
+                    'This role presents an excellent chance to **acquire new insights** within the **[industry] field**.',
+                    'I am eager to **expand my professional exposure** to the **[industry] industry**.'
+                ],
+                current: 'I am looking for an opportunity to **gain experience** in the **[industry] sector**.',
+                explanation: 'Use the verb **"to gain"** (acquire) when talking about experience in a new field or sector. This is the formal and correct way to phrase it.'
+            }
+        };
+
+        // --- Dark Mode Logic (Kept concise) ---
+        const setDarkMode = (isDark) => {
+            const body = document.querySelector('body');
+            if (isDark) {
+                body.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+            sunIcon.classList.toggle('hidden', !isDark);
+            moonIcon.classList.toggle('hidden', isDark);
+        };
+
+        darkModeToggle.addEventListener('click', () => {
+            setDarkMode(!document.querySelector('body').classList.contains('dark'));
+        });
+
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            setDarkMode(true);
+        } else {
+            setDarkMode(false);
+        }
+
+        // --- Block Selection & Rendering Logic ---
+
+        const renderBlocks = () => {
+            const blocksHtml = Object.keys(blocks).map(key => {
+                const block = blocks[key];
+                return `
+                    <div id="${key}" class="block-card p-4 rounded-xl shadow-md border-2 border-gray-700">
+                        <div class="flex items-center mb-2">
+                            ${icons[key] || ''}
+                            <h4 class="font-bold ml-2 text-lg text-gray-300">${block.title}</h4>
+                        </div>
+                        <p class="text-sm text-gray-500 mb-3">${block.desc}</p>
+                        <select data-block-key="${key}" class="block-select w-full p-2 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 text-sm block-select input-style">
+                            ${block.options.map((opt, index) => `<option value="${index}" ${block.current === opt ? 'selected' : ''}>${opt.replace(/\*\*/g, '')}</option>`).join('')}
+                        </select>
+                        <details class="mt-3 text-xs text-gray-400 italic">
+                            <summary class="font-semibold text-yellow-300">Why this matters (Explanation)</summary>
+                            <div class="explanation-content mt-2 text-gray-300">
+                                ${block.explanation}
+                            </div>
+                        </details>
+                    </div>
+                `;
+            }).join('');
+            $('legoBlocks').innerHTML = blocksHtml;
+
+            document.querySelectorAll('.block-select').forEach(select => {
+                select.addEventListener('change', (e) => {
+                    const key = e.target.dataset.blockKey;
+                    const index = parseInt(e.target.value);
+                    blocks[key].current = blocks[key].options[index];
+                });
+            });
+        };
+
+        // --- Answer Generation Logic (Unchanged) ---
+
+        const generateAnswer = (method) => {
+            const jobTitle = $('jobTitle').value || 'Project Manager';
+            const industry = $('industry').value || 'Tech';
+            const topSkill = $('topSkill').value || 'leading complex migrations';
+
+            const getPhrase = (key) => {
+                let phrase = blocks[key].current;
+                phrase = phrase.replace(/\[jobTitle\]/g, jobTitle);
+                phrase = phrase.replace(/\[industry\]/g, industry);
+                phrase = phrase.replace(/\[topSkill\]/g, topSkill);
+                return phrase;
+            };
+
+            let sequence = [];
+            let methodTitle = '';
+
+            if (method === 'lego') {
+                // Lego Method: P1 (Years) + P2 (Context) + P4 (Responsibilities) + P7 (Strengths) + P9 (Skills) + P12 (Why Job) + P6 (Conclusion)
+                sequence = ['P1', 'P2', 'P4', 'P7', 'P9', 'P12', 'P6'];
+                methodTitle = 'Lego Method (Standard)';
+            } else if (method === 'disruptive') {
+                // Disruptive Method: P3 (Strength/Impact) + P4 (Proof) + P1 (Years) + P10 (Top Skills) + P13 (Why Job) + P6 (Conclusion)
+                sequence = ['P3', 'P4', 'P1', 'P10', 'P13', 'P6'];
+                methodTitle = 'Disruptive Method (Impact-First)';
+            }
+
+            // --- Assembly and Punctuation Logic ---
+            let fullAnswer = '';
+            const rawPhrases = sequence.map(key => getPhrase(key));
+
+            for (let i = 0; i < rawPhrases.length; i++) {
+                let phrase = rawPhrases[i].trim();
+                let cleanPhrase = phrase.replace(/\*\*/g, '<strong>').replace(/\*/g, '</strong>');
+
+                if (i === 0) {
+                    cleanPhrase = cleanPhrase.charAt(0).toUpperCase() + cleanPhrase.slice(1);
+                }
+
+                if (fullAnswer.length > 0) {
+                    if (!fullAnswer.endsWith('.')) {
+                        fullAnswer += '. ';
+                    } else {
+                        fullAnswer += ' ';
+                    }
+                }
+                
+                cleanPhrase = cleanPhrase.replace(/\.$/, '');
+                fullAnswer += cleanPhrase;
+            }
+
+            let optionalP5 = getPhrase('P5');
+            const p5Content = optionalP5.replace(/\*\*/g, '<strong>').replace(/\*/g, '</strong>');
+            if (p5Content && !p5Content.toLowerCase().includes('bachelor of science')) { 
+                const p1p2Phrase = rawPhrases[0].replace(/\*\*/g, '<strong>').replace(/\*/g, '</strong>') + ' ' + rawPhrases[1].replace(/\*\*/g, '<strong>').replace(/\*/g, '</strong>');
+                let insertionPoint = fullAnswer.indexOf(p1p2Phrase);
+                
+                if (insertionPoint !== -1) {
+                    let endOfP2 = insertionPoint + p1p2Phrase.length;
+                    
+                    let endOfSentenceIndex = endOfP2;
+                    while(endOfSentenceIndex < fullAnswer.length && fullAnswer[endOfSentenceIndex] !== '.') {
+                        endOfSentenceIndex++;
+                    }
+                    
+                    if (endOfSentenceIndex < fullAnswer.length) {
+                        fullAnswer = fullAnswer.substring(0, endOfSentenceIndex + 1) + ' ' + p5Content + '. ' + fullAnswer.substring(endOfSentenceIndex + 1).trim();
+                    }
+                }
+            }
+
+            if (fullAnswer.length > 0 && !fullAnswer.endsWith('.')) {
+                fullAnswer += '.';
+            }
+            // --- End Assembly Logic ---
+
+            outputContainer.innerHTML = `
+                <div class="text-xs font-mono text-gray-500 mb-2">Assembled via ${methodTitle}</div>
+                <p class="answer-text">${fullAnswer}</p>
+            `;
+            copyBtn.style.display = 'block';
+        };
+
+        legoMethodBtn.addEventListener('click', () => generateAnswer('lego'));
+        disruptiveMethodBtn.addEventListener('click', () => generateAnswer('disruptive'));
+
+        copyBtn.addEventListener('click', () => {
+            const textToCopy = outputContainer.querySelector('.answer-text').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = textToCopy;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+            
+            copyBtn.textContent = 'Copied!';
+            setTimeout(() => { copyBtn.textContent = 'Copy Answer'; }, 2000);
+        });
+
+        // --- Matching Game Logic ---
+
+        const matchPairs = [
+            { id: 1, term: "Experience 16+ years", definition: "Use 'More than 15 years'" },
+            { id: 2, term: "Experience 13-14 years", definition: "Use 'Almost 15 years'" },
+            { id: 3, term: "Formal Noun for 'Area'", definition: "Industry or Sector" },
+            { id: 4, term: "Essential Article", definition: "'A' or 'An' before job title" },
+            { id: 5, term: "Formal Adjective for 'A lot'", definition: "Extensive or Significant" },
+            { id: 6, term: "Powerful Action Verb", definition: "Streamlining (efficiency)" },
+            { id: 7, term: "Verbs for Education", definition: "Have, Received, Obtained" },
+            { id: 8, term: "Strong Conclusion Starter", definition: "I am confident that..." },
+            { id: 9, term: "High-Impact Closing Noun", definition: "Valuable asset" },
+            { id: 10, term: "Intensifier for Adjective", definition: "Extremely or Highly (not 'very')" },
+            { id: 11, term: "The word 'team player'", definition: "A Noun phrase" },
+            { id: 12, term: "Skill Level Adjective", definition: "Advanced, Superior, or Excellent" },
+            { id: 13, term: "Correct Work Ethic Adjective", definition: "Strong" },
+            { id: 14, term: "Proactive Skill Verb", definition: "Hone or Further develop" },
+            { id: 15, term: "Experience Acquisition Verb", definition: "Gain (or Acquire)" }
+        ];
+
+        let selectedCard = null;
+        let matchesFound = 0;
+
+        // Fisher-Yates shuffle algorithm
+        const shuffle = (array) => {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [
+                    array[randomIndex], array[currentIndex]
+                ];
+            }
+            return array;
+        }
+
+        const createCard = (content, type, id) => {
+            const card = document.createElement('div');
+            card.className = `match-card p-3 rounded-lg shadow-md cursor-pointer ${type === 'term' ? 'term' : 'definition'}`;
+            card.textContent = content;
+            card.dataset.matchId = id;
+            card.dataset.type = type;
+            card.addEventListener('click', handleSelection);
+            return card;
+        };
+
+        const initGame = () => {
+            matchesFound = 0;
+            selectedCard = null;
+            gameMessage.textContent = 'Match the Concept to the Definition.';
+            resetGameBtn.classList.add('hidden');
+            termsColumn.querySelectorAll('.match-card').forEach(c => c.remove());
+            definitionsColumn.querySelectorAll('.match-card').forEach(c => c.remove());
+
+            const terms = matchPairs.map(p => ({ content: p.term, id: p.id, type: 'term' }));
+            const definitions = matchPairs.map(p => ({ content: p.definition, id: p.id, type: 'definition' }));
+
+            shuffle(terms);
+            shuffle(definitions);
+
+            terms.forEach(t => termsColumn.appendChild(createCard(t.content, t.type, t.id)));
+            definitions.forEach(d => definitionsColumn.appendChild(createCard(d.content, d.type, d.id)));
+        };
+
+        const handleSelection = (event) => {
+            const currentCard = event.currentTarget;
+
+            if (currentCard.classList.contains('matched') || currentCard.classList.contains('incorrect')) {
+                return; 
+            }
+
+            if (selectedCard === null) {
+                // First selection
+                selectedCard = currentCard;
+                selectedCard.classList.add('selected');
+                gameMessage.textContent = `Selected: ${currentCard.textContent}`;
+            } else if (selectedCard === currentCard) {
+                // Deselecting the same card
+                selectedCard.classList.remove('selected');
+                selectedCard = null;
+                gameMessage.textContent = 'Selection cleared.';
+            } else if (selectedCard.dataset.type === currentCard.dataset.type) {
+                // Selected two cards of the same type (invalid move)
+                selectedCard.classList.remove('selected');
+                selectedCard = currentCard;
+                selectedCard.classList.add('selected');
+                gameMessage.textContent = `Selected: ${currentCard.textContent}`;
+            } else {
+                // Second selection of opposite type - check match
+                checkMatch(selectedCard, currentCard);
+            }
+        };
+
+        const checkMatch = (card1, card2) => {
+            if (card1.dataset.matchId === card2.dataset.matchId) {
+                // Correct match
+                card1.classList.remove('selected');
+                card2.classList.remove('selected');
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                
+                selectedCard = null;
+                matchesFound++;
+                gameMessage.textContent = `Match found! (${matchesFound}/15)`;
+
+                if (matchesFound === matchPairs.length) {
+                    gameMessage.textContent = "Congratulations! You mastered the terminology!";
+                    resetGameBtn.classList.remove('hidden');
+                }
+            } else {
+                // Incorrect match
+                card1.classList.remove('selected');
+                card2.classList.remove('selected');
+                card1.classList.add('incorrect');
+                card2.classList.add('incorrect');
+                gameMessage.textContent = 'Incorrect pair. Try again!';
+                
+                setTimeout(() => {
+                    card1.classList.remove('incorrect');
+                    card2.classList.remove('incorrect');
+                    selectedCard = null;
+                    gameMessage.textContent = 'Match the Concept to the Definition.';
+                }, 500);
+            }
+        };
+        
+        resetGameBtn.addEventListener('click', initGame);
+
+        // Initial calls
+        renderBlocks();
+        initGame();
+    </script>
+</body>
+</html>
